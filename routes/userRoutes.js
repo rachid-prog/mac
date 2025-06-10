@@ -28,6 +28,9 @@ router.put('/:id', auth, require('../controllers/Users/update'));
 
 router.delete('/:id', auth, require('../controllers/Users/deleteUser'));
 
+// Routes pour la gestion roles utilisateurs
+router.put('/:id/role', require('../controllers/Users/updateRole'));
+
 
 
 module.exports = router;

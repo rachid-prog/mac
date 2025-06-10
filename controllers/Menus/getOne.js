@@ -1,5 +1,12 @@
 const Menu = require('../../models/Menu')
 
+/**
+ * @desc Récupérer un menu par son ID
+ * @route GET /api/menus/:id
+ * @access Public
+ */
+
+
 const getOne = async(req, res)=>{
     try{
         const {id} = req.params

@@ -2,14 +2,17 @@ const mongoose = require('mongoose');
 const Counter = require('./Counter')
 
 const orderSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   menus: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Menu' }],  
   createdAt: { type: Date, default: Date.now },
-  orderNumber: { type: String, unique: true },
+  orderNumber: { type: String, unique: true }, 
   status: {
     type: String,
     enum: ['en attente', 'préparé'],
     default: 'en attente'
-  }
+  },
+  totalPrice: { type: Number, default: 0 },
+  
 });
 
 

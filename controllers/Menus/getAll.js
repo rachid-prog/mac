@@ -1,5 +1,11 @@
 const Menu = require('../../models/Menu')
 
+/**
+ * @desc Récupérer tous les menus
+ * @route GET /api/menus
+ * @access Public
+ */
+
 const getAll = async(req, res)=>{
     try{
         const menus = await Menu.find().populate('products', 'name price stock')

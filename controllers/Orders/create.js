@@ -1,12 +1,35 @@
 const Order = require('../../models/Order')
+const Menu = require('../../models/Menu')
+
 
 const create = async(req, res)=>{
     try{
-        const order = await Order.create(req.body)
+        //calculer le prix total de la commande
+        if(!req.body.menus || req.body.menus.length === 0){
+            return res.status(400).json({success: false, message: "Veuillez fournir des menus pour la commande"})
+        }
+        const menus = req.body.menus
+        let totalPrice = 0;
+        for (const menuId of menus) {
+            const menu = await Menu.findById(menuId);
+            if (!menu) {
+                return res.status(400).json({success: false, message: `Menu avec l'ID ${menuId} non trouvé`});
+            }
+            console.log(menu)
+            totalPrice += menu.totalPrice; 
+        }
+        
+        req.body.totalPrice = totalPrice;       
+      
+    
+        
+        
+        const order = await Order.create(req.body)        
         
         if(!order){
             return res.status(400).json({success: false, message:"pas de menu trouver"})
         }
+      
        res.status(200).json({success: true, message: "Order créer avec succées", order})
 
     }

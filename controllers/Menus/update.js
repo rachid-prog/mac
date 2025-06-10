@@ -1,5 +1,11 @@
 const Menu = require('../../models/Menu')
 
+/**
+ * @desc Mettre à jour un menu
+ * @route PUT /api/menus/:id
+ * @access Private/Admin
+ */
+
 const update = async (req, res)=>{
     try{
         const {id} = req.params

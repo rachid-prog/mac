@@ -1,5 +1,10 @@
 const Menu = require('../../models/Menu')
 
+/**
+ * @desc Supprimer un menu
+ * @route DELETE /api/menus/:id
+ * @access Private/Admin
+ */
 const deletemenu = async(req, res)=>{
     try{
         const {id} = req.params

@@ -1,6 +1,11 @@
+//Importer les dépendances nécessaires
 const Menu = require('../../models/Menu')
 const Product = require('../../models/product')
 
+/* * @desc Créer un menu
+ * @route POST /api/menus
+ * @access Private/Admin
+ */
 
 const create = async(req, res)=>{
     try{
