@@ -33,7 +33,7 @@ app.use(limiter);
 connexion()
 
 //Port d'écoute
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 10000
 app.listen(PORT, ()=>{ console.log(`☻ En écoute sur http://localhost:${PORT} ☻`)})
 
 //Les routes
