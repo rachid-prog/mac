@@ -32,9 +32,6 @@ app.use(limiter);
 //Connexion à la base de données
 connexion()
 
-//Port d'écoute
-const PORT = process.env.PORT || 10000
-app.listen(PORT, ()=>{ console.log(`☻ En écoute sur http://localhost:${PORT} ☻`)})
 
 //Les routes
 app.use('/api/products', auth, admin,  upload, require('./routes/productRoutes'));
@@ -44,3 +41,8 @@ app.use('/api/menus', auth, admin, require('./routes/menuRoutes'))
 app.use('/api/orders', require('./routes/orderRoutes'))
 
 app.use('/api/users', require('./routes/userRoutes'))
+
+
+//Port d'écoute
+const PORT = process.env.PORT || 3000
+app.listen(PORT, ()=>{ console.log(`☻ En écoute sur http://localhost:${PORT} ☻`)})
