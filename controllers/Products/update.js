@@ -21,6 +21,9 @@ const update = async(req, res)=>{
          if (err.name === "CastError") {
             return res.status(400).json({ message: err.message })
         }
+         if(err.name ==="MongooseError"){
+            return res.status(400).json({ success: false, message: "Le nom doit être unique" });
+        }
         res.status(500).json({success: false, message:"Erreur serveur" })
     }
 

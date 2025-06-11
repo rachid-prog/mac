@@ -12,15 +12,15 @@ const router = express.Router()
 */
 
 
-router.post('',  require('../controllers/Products/create'))
+router.post('',    require('../controllers/Products/create'))
 
-router.get('', require('../controllers/Products/getAll'))
+router.get('',  require('../controllers/Products/getAll'))
 
-router.get('/:id', require('../controllers/Products/getOne'))
+router.get('/:id',  require('../controllers/Products/getOne'))
 
-router.put('/:id', require('../controllers/Products/update'))
+router.put('/:id',  require('../controllers/Products/update'))
 
-router.delete('/:id', require('../controllers/Products/delete'))
+router.delete('/:id',  require('../controllers/Products/delete'))
 
 
 module.exports = router

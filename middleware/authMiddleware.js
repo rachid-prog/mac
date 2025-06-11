@@ -22,6 +22,7 @@ const auth = async (req, res, next) => {
         }
 
         req.user = user; 
+        
         next(); 
 
     }
@@ -39,6 +40,7 @@ const admin = (req, res, next)=>{
     next()
 
 }
+
 
 module.exports = {auth , admin};
     

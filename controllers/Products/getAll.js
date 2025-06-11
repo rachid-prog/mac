@@ -2,7 +2,7 @@ const Product = require('../../models/product')
 
 const getAll = async(req, res)=>{
     try{
-        const products = await Product.find()
+        const products = await Product.find().populate('user') // Populate user field with name and email
         if(!products){
             res.status(400).json({message: "pas de produit trover"})
         }

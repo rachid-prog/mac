@@ -5,9 +5,11 @@ const cors = require('cors')
 const upload = require('./middleware/multer')
 const helmet = require('helmet')
 const rateLimit = require('express-rate-limit');
+const { auth, admin } = require('./middleware/authMiddleware')
 
 //Définition de l'application Express
 const express = require('express')
+
 const app = express()
 
 //Middelwear
@@ -35,9 +37,9 @@ const PORT = process.env.PORT || 3000
 app.listen(PORT, ()=>{ console.log(`☻ En écoute sur http://localhost:${PORT} ☻`)})
 
 //Les routes
-app.use('/api/products', upload, require('./routes/productRoutes'));
+app.use('/api/products', auth, admin,  upload, require('./routes/productRoutes'));
 
-app.use('/api/menus',  require('./routes/menuRoutes'))
+app.use('/api/menus', auth, admin, require('./routes/menuRoutes'))
 
 app.use('/api/orders', require('./routes/orderRoutes'))
 

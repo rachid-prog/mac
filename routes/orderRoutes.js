@@ -1,7 +1,7 @@
 //Importer les modules nécessaires
 const express = require('express')
 const router = express.Router()
-
+const {auth} = require('../middleware/authMiddleware')
 /*
     Routes pour les commandes
     - POST /api/orders : Créer une nouvelle commande
@@ -12,11 +12,11 @@ const router = express.Router()
     - PUT /api/orders/:id/status : Mettre à jour le statut d'une commande
 */
 
-router.post('', require('../controllers/Orders/create'))
-router.get('', require('../controllers/Orders/getAll'))
-router.delete('/:id', require('../controllers/Orders/deleteOrder'))
-router.get('/:id', require('../controllers/Orders/getOne'))
-router.put('/:id', require('../controllers/Orders/update'))
+router.post('', auth, require('../controllers/Orders/create'))
+router.get('', auth, require('../controllers/Orders/getAll'))
+router.delete('/:id',auth, require('../controllers/Orders/deleteOrder'))
+router.get('/:id',auth, require('../controllers/Orders/getOne'))
+router.put('/:id',auth, require('../controllers/Orders/update'))
 
 //modifier le statut d'une commande
 router.put('/:id/status', require('../controllers/Orders/updateStatus'))

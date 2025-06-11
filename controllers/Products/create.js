@@ -3,7 +3,7 @@ const Product = require('../../models/product')
 
 const creatProduct = async (req, res)=>{
     try{
-        console.log(req.body)
+        
         const {name, price, description, stock, image} = req.body
          
         const existe = await Product.findOne({name})
@@ -11,7 +11,7 @@ const creatProduct = async (req, res)=>{
             return res.status(400).json({success: false, massage:"Nom produit existe"})
         }
         
-        const product = await Product.create({name, price, description, stock, image})
+        const product = await Product.create({name, price, description, stock, image, user: req.user._id})
         if(!product){
             return res.status(400).json({success: false, massage:"Erreur de création du produit"})
         }
@@ -28,6 +28,9 @@ const creatProduct = async (req, res)=>{
 
          if (err.name === "CastError") {
             return res.status(400).json({ message: err.message })
+        }
+        if(err.name ==="MongooseError"){
+            return res.status(400).json({ success: false, message: "Le nom doit être unique" });
         }
        
         res.status(500).json({success: false, message: "Erreur serveur"})

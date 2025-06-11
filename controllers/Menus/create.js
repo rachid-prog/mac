@@ -21,6 +21,8 @@ const create = async(req, res)=>{
                 return res.status(400).json({success: false, message: `Produit avec l'ID ${productId} non trouvé`});
             }
             if (product.stock <= 0) {
+                // Si le produit est en rupture de stock, retourner une erreur
+                
                 return res.status(400).json({ success: false,  message: `Le produit "${product.name}" est en rupture de stock`});
             }
             // Diminuer le stock du produit
@@ -48,7 +50,9 @@ const create = async(req, res)=>{
          if (err.name === "CastError") {
             return res.status(400).json({ message: err.message })
         }
-       
+        if(err.name){
+            return res.status(400).json({success: false, message: "Produit en double dans le menu"})
+        }
         res.status(500).json({success: false, message: "Erreur serveur"})
         
     }

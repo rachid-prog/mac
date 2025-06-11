@@ -31,6 +31,17 @@ const update = async (req, res) => {
     }
     catch(err){
         console.error(err);
+         if(err.name === "ValidationError"){
+            return res.status(400).json({success: false, message: err.message})
+        }
+
+        if (err.name === "CastError") {
+            return res.status(400).json({ message: err.message })
+        }
+        if(err.name ==="MongooseError"){
+            return res.status(400).json({ success: false, message: "Le nom doit être unique" });
+        }
+
         return res.status(500).json({ success: false, message: "Erreur serveur" });
     }
 

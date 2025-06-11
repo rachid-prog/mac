@@ -13,6 +13,7 @@ const {auth, admin} = require('../middleware/authMiddleware');
     - GET /api/users/:id : Récupérer un utilisateur par son ID
     - PUT /api/users/:id : Mettre à jour un utilisateur par son ID
     - DELETE /api/users/:id : Supprimer un utilisateur par son ID
+    - PUT /api/users/:id/role : Mettre à jour le rôle d'un utilisateur par son ID
 */
 
 // Routes pour l'enregistrement et la connexion des utilisateurs
@@ -26,10 +27,10 @@ router.get('/:id',auth, require('../controllers/Users/getOne'));
 
 router.put('/:id', auth, require('../controllers/Users/update'));
 
-router.delete('/:id', auth, require('../controllers/Users/deleteUser'));
+router.delete('/:id', auth, admin, require('../controllers/Users/deleteUser'));
 
 // Routes pour la gestion roles utilisateurs
-router.put('/:id/role', require('../controllers/Users/updateRole'));
+router.put('/:id/role', auth, admin, require('../controllers/Users/updateRole'));
 
 
 
