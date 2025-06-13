@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 
 const register = async (req, res) => {
     try{
+        
         const {name} = req.body;
         const {password} = req.body;    
 
@@ -30,6 +31,10 @@ const register = async (req, res) => {
         if(err.name === "ValidationError"){
             return res.status(400).json({success: false, message: err.message})
         }
+        if(err.code === 11000){
+            return res.status(400).json({success: false, message: "Ce nom d'utilisateur est déjà pris"})
+        }
+        
         res.status(500).json({success: false, message: "Erreur serveur"})
     }
 

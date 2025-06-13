@@ -35,7 +35,7 @@ const auth = async (req, res, next) => {
 
 const admin = (req, res, next)=>{
     if(req.user.role !== 'admin'){
-        return res.status(403).json({message: "Accès refusé"})
+        return res.status(403).json({success: false, message: "Accès refusé"})
     }
     next()
 

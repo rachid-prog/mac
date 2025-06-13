@@ -1,5 +1,5 @@
 //Importation des modules necessaires
-require('dotenv').config()
+require('dotenv').config({ path: '.env' });
 const connexion = require('./database/connexion')
 const cors = require('cors')
 const upload = require('./middleware/multer')
@@ -42,7 +42,15 @@ app.use('/api/orders', require('./routes/orderRoutes'))
 
 app.use('/api/users', require('./routes/userRoutes'))
 
+//Erreur 404 pour les routes non trouvées
+app.use((req, res, next) => {
+    res.status(404).json({ success: false, message: "Route non trouvée" });
+});
 
 //Port d'écoute
 const PORT = process.env.PORT || 3000
 app.listen(PORT, ()=>{ console.log(`☻ En écoute sur http://localhost:${PORT} ☻`)})
+
+// Exporter l'application pour les tests
+module.exports = app;
+
