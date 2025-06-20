@@ -7,16 +7,38 @@ const helmet = require('helmet')
 const rateLimit = require('express-rate-limit');
 const { auth, admin } = require('./middleware/authMiddleware')
 const morgan = require('morgan');
+const mongoSanitize = require('express-mongo-sanitize');
+const xssClean = require('xss-clean');
+const allowedOrigins = ['https://mac-k9fa.onrender.com', 'http://localhost:3000'];
 
 //Définition de l'application Express
 const express = require('express')
 const app = express()
 
 // Middlewares globaux
-app.use(express.json())
-app.use(express.urlencoded({extended: true}))
-app.use(helmet()) //Sécurisation de l'application avec Helmet
-app.use(cors())
+app.use(express.json({ limit: '10kb' })) // Limite de taille pour les requêtes JSON
+app.use(express.urlencoded({extended: true, limit: '10kb'})) // Limite de taille pour les requêtes URL-encodées
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", 'https://cdnjs.cloudflare.com'],   // par ex. autoriser les scripts hébergés ailleurs (CDN)
+      styleSrc: ["'self'", 'https:', 'https://fonts.googleapis.com'], // par ex. autoriser styles hébergés ailleurs (CDN)
+      imgSrc: ["'self'", 'data:', 'blob:', 'https://mac-k9fa.onrender.com'], // images sûres
+      connectSrc: ["'self'"], // autoriser les requêtes XHR/WebSocket vers le serveur uniquement
+      objectSrc: ["'none'"], // désactiver les plugins Flash, etc.
+      upgradeInsecureRequests: [], // upgrade http vers https
+    },
+  })
+);
+
+app.use(cors({
+    origin: allowedOrigins, // Autoriser les origines spécifiques
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Méthodes autorisées
+    credentials: true // Autoriser les cookies et les en-têtes d'autorisation
+}))
+app.use(mongoSanitize()) //Protection contre les attaques NoSQL
+app.use(xssClean()); //Protection contre les attaques XSS
 
 //definir dossier statique pour les images
 app.use('/uploads', express.static('uploads'))
@@ -32,10 +54,13 @@ if (process.env.NODE_ENV === 'development') {
 //Limiter le nombre de requêtes pour éviter les abus
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limite chaque IP à 100 requêtes
+    max: 5, // Limite chaque IP à 5 requêtes
     message: "Trop de requêtes, veuillez réessayer plus tard."
 });
-app.use(limiter);
+app.use('/api/auth/login', limiter);
+app.use('/api/auth/register', limiter);
+
+app.disable('x-powered-by'); // Désactiver l'en-tête X-Powered-By pour des raisons de sécurité
 
 //Connexion à la base de données
 connexion()

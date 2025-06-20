@@ -1,6 +1,7 @@
 const multer = require("multer")
 const uuid = require("uuid")
 const path = require("path")
+const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
 
 // Configuration du stockage des fichiers
 const storage = multer.diskStorage({
@@ -25,15 +26,14 @@ const storage = multer.diskStorage({
 
 /// Filtrage des fichiers (seulement les images autorisées)
 const fileFilter = (req, file, cb) => {
-
-    // Vérifie que le type MIME commence par "image/"
-    if (file.mimetype.startsWith("image")) {
-        cb(null, true)
-    } else {
-        console.log(file)
-        cb(new Error("Format de fichier invalide"))
-    }
-}
+  const extension = path.extname(file.originalname).toLowerCase();
+  
+  if (file.mimetype.startsWith("image") && allowedExtensions.includes(extension)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Seules les images avec des extensions valides sont autorisées"));
+  }
+};
 
 // Limites à 2Mo
 const limits = {
