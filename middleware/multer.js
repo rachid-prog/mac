@@ -2,14 +2,20 @@ const multer = require("multer")
 const uuid = require("uuid")
 const path = require("path")
 
-
+// Configuration du stockage des fichiers
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
+
+        // Dossier de destination pour les fichiers uploadés
         cb(null, "uploads")
     },
     filename: (req, file, cb) => {
-        const extension = path.extname(file.originalname) //recuprer l'extension du fichier envoyer par le client
-        req.body.image= `Produit-${uuid.v4()}-${Date.now()}${extension}` //nom image produit unique
+
+        //recuprer l'extension du fichier envoyer par le client
+        const extension = path.extname(file.originalname)
+
+        //Générer un nom de fichier unique : Produit-UUID-Date.ext
+        req.body.image= `Produit-${uuid.v4()}-${Date.now()}${extension}` 
       
         cb(null, req.body.image)
     },
@@ -17,7 +23,10 @@ const storage = multer.diskStorage({
 })
 
 
+/// Filtrage des fichiers (seulement les images autorisées)
 const fileFilter = (req, file, cb) => {
+
+    // Vérifie que le type MIME commence par "image/"
     if (file.mimetype.startsWith("image")) {
         cb(null, true)
     } else {
@@ -26,11 +35,14 @@ const fileFilter = (req, file, cb) => {
     }
 }
 
+// Limites à 2Mo
+const limits = {
+  fileSize: 2 * 1024 * 1024
+};
 
 
 
-
-
-module.exports = multer({ storage, fileFilter }).single("image") // "image" est le nom du champ dans le formulaire
+// Création du middleware Multer avec configuration
+module.exports = multer({ storage, fileFilter , limits}).single("image")
 
 

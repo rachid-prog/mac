@@ -3,7 +3,7 @@ const Menu = require('../../models/Menu')
 /**
  * @desc Récupérer tous les menus
  * @route GET /api/menus
- * @access Public
+ * @access Admin
  */
 
 const getAll = async(req, res)=>{

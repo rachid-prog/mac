@@ -1,8 +1,11 @@
-/* * 
- * description La récupération de l'utilisateur par ID
- * Le cas où l'utilisateur n'existe pas (404).
- * Les erreurs d'ID malformé (400, grâce au CastError).
- * Les erreurs serveur (500).
+/**
+ * getOne
+ * ==============================================================================
+ =  - Récupère un utilisateur par son ID depuis la base de données MongoDB.     =
+ =  - Exclut le champ "password" pour des raisons de sécurité.                  =
+ =  - ID malformé (ex: non conforme à MongoDB ObjectId) → 400                   =
+ =  - Erreurs internes du serveur → 500                                         =
+ ==================================================================================
  */
 
 
@@ -11,13 +14,24 @@ const User = require('../../models/Users');
 const getOne = async (req, res) => {
     try {
         const userId = req.params.id;
-        const user = await User.findById(userId, '-password'); // Exclude password field
+
+        // Vérification de la validité de l'identifiant MongoDB 
+        if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ success: false, message: "Identifiant utilisateur invalide" });
+        }
+        
+        // 🔍 Récupération de l'utilisateur sans le champ "password"
+        const user = await User.findById(userId, '-password');
+
+        // ❌ Utilisateur non trouvé
         if (!user) {
             return res.status(404).json({ success: false, message: "Utilisateur non trouvé" });
         }
+
         res.status(200).json({ success: true, user });
     } catch (err) {
         console.log(err);
+        
          if (err.name === 'CastError') {
             return res.status(400).json({ success: false, message: "Identifiant utilisateur invalide" });
         }

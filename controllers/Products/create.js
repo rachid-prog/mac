@@ -16,7 +16,7 @@ const creatProduct = async (req, res)=>{
             return res.status(400).json({success: false, massage:"Erreur de création du produit"})
         }
 
-        res.status(200).json({success: true, massage:"produit créer avec succées", product})
+        res.status(200).json({success: true, message:"produit créer avec succées", product})
         
 
     }
@@ -38,4 +38,4 @@ const creatProduct = async (req, res)=>{
     
 }
 
-module.exports = creatProduct
+module.exports = creatProduct 

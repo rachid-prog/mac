@@ -3,7 +3,7 @@ const Menu = require('../../models/Menu')
 /**
  * @desc Récupérer un menu par son ID
  * @route GET /api/menus/:id
- * @access Public
+ * @access Admin
  */
 
 

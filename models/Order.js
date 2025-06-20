@@ -1,11 +1,21 @@
 const mongoose = require('mongoose');
 const Counter = require('./Counter')
 
+
+// Schéma de la commande
 const orderSchema = new mongoose.Schema({
+
+  // Référence à l'utilisateur qui a passé la commande
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  menus: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Menu' }],  
+ 
+  // Liste des menus commandés (liée au modèle Menu)
+  menus: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Menu' }], 
+
   createdAt: { type: Date, default: Date.now },
+ 
+  // Numéro de commande unique généré automatiquement
   orderNumber: { type: String, unique: true }, 
+
   status: {
     type: String,
     enum: ['en attente', 'préparé'],

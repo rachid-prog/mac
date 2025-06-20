@@ -1,20 +1,25 @@
-//Importer les modules nécessaires
+/*
+==============================================================================================================
+= Description des routes :                                                                                   =
+= POST   /api/users/register      → Enregistrer un nouvel utilisateur                                        =
+= POST   /api/users/login         → Authentifier un utilisateur (login)                                      =
+= GET    /api/users               → Récupérer tous les utilisateurs (admin uniquement)                       =
+= GET    /api/users/:id           → Récupérer un utilisateur par son ID (auth requis)                        =
+= PUT    /api/users/:id           → Mettre à jour un utilisateur (auth requis)                               =
+= DELETE /api/users/:id           → Supprimer un utilisateur (admin uniquement)                              =
+= PUT    /api/users/:id/role      → Modifier le rôle d’un utilisateur (admin uniquement)                     =
+==============================================================================================================
+*/
+
+
+// Importation du module Express et création d'un routeur
 const express = require('express');
 const router = express.Router();
 
-// Importation des middlewares d'authentification et d'autorisation
+//Importation des middlewares d'authentification et d'autorisation
 const {auth, admin} = require('../middleware/authMiddleware');
 
-/*
-    Routes pour les utilisateurs
-    - POST /api/users/register : Enregistrer un nouvel utilisateur
-    - POST /api/users/login : Authentifier un utilisateur
-    - GET /api/users : Récupérer tous les utilisateurs (admin)
-    - GET /api/users/:id : Récupérer un utilisateur par son ID
-    - PUT /api/users/:id : Mettre à jour un utilisateur par son ID
-    - DELETE /api/users/:id : Supprimer un utilisateur par son ID
-    - PUT /api/users/:id/role : Mettre à jour le rôle d'un utilisateur par son ID
-*/
+
 
 // Routes pour l'enregistrement et la connexion des utilisateurs
 router.post('/register', require('../controllers/Users/register'));

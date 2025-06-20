@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 
+// Schéma de données pour les utilisateurs
 const userSchema = new mongoose.Schema({
     name: { 
         type: String, 
@@ -20,14 +21,16 @@ const userSchema = new mongoose.Schema({
         // maxlength: [32, "Le mot de passe ne doit pas dépasser 100 caractères"],
         // match: [/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$/, 'Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule et un chiffre.'], 
     },
+
+    // Rôle de l'utilisateur
     role: {
         type: String,
-        enum: ['user', 'accueil', 'preparateur', 'admin'],
+        enum: ['user', 'accueil', 'preparateur', 'admin'], // Liste des rôles autorisés
         default: 'user'       
     },
     createdAt: { type: Date, default: Date.now }
 
-})
+},  { timestamps: true })
 
 
 module.exports = mongoose.model('User', userSchema)

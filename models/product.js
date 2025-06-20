@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// Schéma de données pour les produits
 const ProductSchema = new mongoose.Schema({
   name: {type: String, 
     required : [true, 'Nom requis'], 
@@ -33,6 +34,6 @@ const ProductSchema = new mongoose.Schema({
     required: [true, 'Le stock est requis.'],
     min: [0, 'Le stock doit être supérieur ou égal à 0.']
   },
-});
+},{ timestamps: true });
 
 module.exports = mongoose.model('Product', ProductSchema);
