@@ -1,3 +1,5 @@
+const mongoose = require('mongoose')
+
 const order = require('../../models/Order');
 const updateStatus = async (req, res) => {
     const { id } = req.params;
@@ -5,13 +7,21 @@ const updateStatus = async (req, res) => {
     const userRole = req.user?.role;
     //Status autorisées par rôle
     const rolePermissions = {
-        acceuil: ['en attente', 'préparé'],
-        superviseur: ['en attente', 'préparé'],
+        acceuil: ['en attente', 'livré'],
+        superviseur: ['préparé'],
         admin: ['en attente', 'préparé', 'livré'],
     }
 
 
     try {
+         // 🔒 Vérifier que l'ID est un ObjectId valide
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
+                success: false,
+                message: "ID de commande invalide",
+            });
+        }
+
         
         // Vérifier si la commande existe
         const orderToUpdate = await order.findById(id);
@@ -22,6 +32,15 @@ const updateStatus = async (req, res) => {
         if (!rolePermissions[userRole] || !rolePermissions[userRole].includes(status)) {
             return res.status(403).json({ success: false, message: "Vous n'avez pas le droit de modifier ce statut" });
         }
+
+        // ✅ Éviter les mises à jour inutiles [Pas de save() inutile si le statut est inchangé]
+            if (orderToUpdate.status === status) {
+            return res.status(200).json({
+                success: true,
+                message: "Le statut est déjà à jour",
+                order: orderToUpdate,
+            });
+            }
 
         // Mettre à jour le statut de la commande
         orderToUpdate.status = status;

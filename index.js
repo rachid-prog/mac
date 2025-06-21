@@ -8,37 +8,67 @@ const rateLimit = require('express-rate-limit');
 const { auth, admin } = require('./middleware/authMiddleware')
 const morgan = require('morgan');
 const mongoSanitize = require('express-mongo-sanitize');
-const xssClean = require('xss-clean');
+const sanitizeHtml = require('sanitize-html')
+
 const allowedOrigins = ['https://mac-k9fa.onrender.com', 'http://localhost:3000'];
+const swaggerDocs = require('./swagger');
 
 //Définition de l'application Express
 const express = require('express')
 const app = express()
 
+// Ajoute la route /api-docs   [http://localhost:3000/api-docs/]
+if (process.env.NODE_ENV === 'development') {
+  swaggerDocs(app);
+}
+
 // Middlewares globaux
 app.use(express.json({ limit: '10kb' })) // Limite de taille pour les requêtes JSON
 app.use(express.urlencoded({extended: true, limit: '10kb'})) // Limite de taille pour les requêtes URL-encodées
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", 'https://cdnjs.cloudflare.com'],   // par ex. autoriser les scripts hébergés ailleurs (CDN)
-      styleSrc: ["'self'", 'https:', 'https://fonts.googleapis.com'], // par ex. autoriser styles hébergés ailleurs (CDN)
-      imgSrc: ["'self'", 'data:', 'blob:', 'https://mac-k9fa.onrender.com'], // images sûres
-      connectSrc: ["'self'"], // autoriser les requêtes XHR/WebSocket vers le serveur uniquement
-      objectSrc: ["'none'"], // désactiver les plugins Flash, etc.
-      upgradeInsecureRequests: [], // upgrade http vers https
-    },
-  })
-);
+
+
+app.use(helmet()); // Protection contre les attaques courantes (XSS, clickjacking, etc.)
+
+// Middleware pour nettoyer toutes les données du body [remplace xxs]
+function sanitizeMiddleware(req, res, next) {
+  if (req.body) {
+    for (const key in req.body) {
+      if (typeof req.body[key] === 'string') {
+        req.body[key] = sanitizeHtml(req.body[key]);
+      }
+    }
+  }
+  next();
+}
+
+app.use(sanitizeMiddleware);
 
 app.use(cors({
     origin: allowedOrigins, // Autoriser les origines spécifiques
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Méthodes autorisées
     credentials: true // Autoriser les cookies et les en-têtes d'autorisation
 }))
-app.use(mongoSanitize()) //Protection contre les attaques NoSQL
-app.use(xssClean()); //Protection contre les attaques XSS
+
+
+
+// Middleware pour nettoyer les requêtes MongooDB probbléme avec app.use(mongoSanitize()}
+app.use((req, res, next) => {
+  try {
+    // Nettoie req.query sans la remplacer (on met le résultat dans req.sanitizedQuery)
+    req.sanitizedQuery = mongoSanitize.sanitize(req.query);
+
+    // Nettoie req.body et req.params directement (pas de problème à les modifier)
+    mongoSanitize.sanitize(req.body);
+    mongoSanitize.sanitize(req.params);
+  } catch (err) {
+    console.error('Erreur lors du nettoyage mongoSanitize:', err);
+    // Continue quand même la requête
+  }
+  next(); // Passer l'erreur au middleware d'erreur express
+});
+
+
+
 
 //definir dossier statique pour les images
 app.use('/uploads', express.static('uploads'))
@@ -51,7 +81,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 
-//Limiter le nombre de requêtes pour éviter les abus
+//Limiter le nombre de requêtes pour éviter les abus [5 requêtes/15 min par IP]
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 5, // Limite chaque IP à 5 requêtes

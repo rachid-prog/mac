@@ -12,7 +12,7 @@ const User = require('../../models/Users')
 const getAll = async (req, res) => {
     try {
          // Récupération de tous les utilisateurs, sans le champ `password` pour des raisons de sécurité
-        const users = await User.find({}, '-password');
+        const users = await User.find({}, '-password').sort({ createdAt: -1 });
         
         // Vérification si la liste est vide ou aucun résultat
         if (!users || users.length === 0) {

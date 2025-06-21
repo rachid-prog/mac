@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 // Définition du schéma pour les menus
 const menuSchema = new mongoose.Schema({
   
-    name: String,
+    name: {type: String, unique: [true, "Nom unique"]},
 
     // Liste des produits (références aux documents Product)
     products : [

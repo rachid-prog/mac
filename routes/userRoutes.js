@@ -11,6 +11,60 @@
 ==============================================================================================================
 */
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 60d21b4667d0d8992e610c85
+ *         name:
+ *           type: string
+ *           example: jean.dupont
+ *         role:
+ *           type: string
+ *           enum: [user, accueil, preparateur, admin]
+ *           example: user
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *
+ * /api/users/register:
+ *   post:
+ *     summary: Enregistrer un nouvel utilisateur
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - password
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: jean.dupont
+ *               password:
+ *                 type: string
+ *                 example: Passw0rd!
+ *               role:
+ *                 type: string
+ *                 example: user
+ *     responses:
+ *       201:
+ *         description: Utilisateur créé avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Erreur de validation ou utilisateur déjà existant
+ */
 
 // Importation du module Express et création d'un routeur
 const express = require('express');

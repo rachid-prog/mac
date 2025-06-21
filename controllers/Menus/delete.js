@@ -1,4 +1,5 @@
 const Menu = require('../../models/Menu')
+const mongoose = require('mongoose')
 
 /**
  * @desc Supprimer un menu
@@ -8,6 +9,11 @@ const Menu = require('../../models/Menu')
 const deletemenu = async(req, res)=>{
     try{
         const {id} = req.params
+
+        // Vérification de l'ID MongoDB
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+             return res.status(400).json({ success: false, message: "ID de menu invalide" });
+        }
         
         const menu = await Menu.findByIdAndDelete(id)
         if(!menu){
@@ -18,10 +24,8 @@ const deletemenu = async(req, res)=>{
     }
     catch(err){
         console.log(err)
-        if(err.name="CastError"){
-            return res.status(400).json({success: false, massage :"Erreur du identifiant du Menu"})
-        }
-        res.staus(500).json({success: false, message: "erreur de serveur"})
+       
+        res.status(500).json({success: false, message: "erreur de serveur"})
 
     }
 }

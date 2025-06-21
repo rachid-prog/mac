@@ -28,9 +28,18 @@ const userSchema = new mongoose.Schema({
         enum: ['user', 'accueil', 'preparateur', 'admin'], // Liste des rôles autorisés
         default: 'user'       
     },
-    createdAt: { type: Date, default: Date.now }
+    
 
-},  { timestamps: true })
+},  { timestamps: true }) // <-- active createdAt et updatedAt automatiquement
+
+//Ignorrer _v à la'ffichage des données
+userSchema.set('toJSON', {
+  transform: function (doc, ret, options) {
+    delete ret.__v;
+    return ret;
+  }
+});
+
 
 
 module.exports = mongoose.model('User', userSchema)
