@@ -2,12 +2,13 @@ const Order = require('../../models/Order');
 const mongoose = require('mongoose')
 const getAll = async (req, res) => {
     try {
-        //Accés aux commandes selon les rôles:
+        
         const user = req.user;
-        console.log(user.role, user._id)
+       
+        //Accés aux commandes selon les rôles:
         const role = ["admin", "accueil"]
         if(!user || !role.includes(user.role)){
-            return res.status(403).json({success: false, message: "Accès refusé  : rôle non autorisé", user})
+            return res.status(403).json({success: false, message: "Accès refusé  : rôle non autorisé"})
         }
         
         //Filtrer selon rôle [admin || accueil]
@@ -18,7 +19,7 @@ const getAll = async (req, res) => {
         
 
         // Recherche toutes les commandes en populant les relations utiles
-        const orders = await Order.find(filter).populate({ path: 'menus',select: 'name -_id'  }).populate({ path: 'user', select: 'name  -_id' })
+        const orders = await Order.find(filter).populate({ path: 'menus',select: 'name'  }).populate({ path: 'user', select: 'name' })
 
         
         
